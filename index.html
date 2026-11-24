@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Taste file maker</title>
+  <meta name="description" content="Five prompts in, a taste.md out. Nothing is sent anywhere.">
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,600..900,100,1&family=Instrument+Sans:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="top">
+    <span class="credit">Michael Restiano · Prototype with AI</span>
+    <span class="progress label" id="progress" aria-live="polite"></span>
+  </header>
+
+  <main id="main" class="screen-host"></main>
+
+  <!-- Screen templates. app.js clones one into #main per step. -->
+  <template id="tpl-intro">
+    <section class="screen intro">
+      <h1 class="display">
+        Make your <span class="print" aria-label="taste"><span class="ink ink-a" aria-hidden="true">taste</span><span class="ink ink-b" aria-hidden="true">taste</span><span class="ink-core">taste</span></span> file.
+      </h1>
+      <p class="sub">Five prompts. About six minutes. You leave with a <code>taste.md</code> your AI tool reads before it makes anything for you.</p>
+      <ul class="plain">
+        <li>Two examples you like, two you don't, and why.</li>
+        <li>Your reasons become Do and Don't rules, in your words. You can edit them.</li>
+        <li>Answers stay in this browser tab. Nothing is sent anywhere.</li>
+      </ul>
+      <div class="actions">
+        <button class="btn primary" data-action="start">Start</button>
+      </div>
+    </section>
+  </template>
+
+  <template id="tpl-prompt">
+    <section class="screen prompt">
+      <form novalidate>
+        <h1 class="statement" data-field="title"></h1>
+        <p class="body hint" data-field="hint"></p>
+
+        <div class="field" data-slot="example">
+          <label class="label" data-field="exampleLabel"></label>
+          <textarea rows="5" data-input="example" spellcheck="true"></textarea>
+        </div>
+
+        <div class="field" data-slot="link">
+          <label class="label" data-field="linkLabel">Link (optional)</label>
+          <input type="url" inputmode="url" placeholder="https://" data-input="link">
+        </div>
+
+        <div class="field" data-slot="why">
+          <label class="label" data-field="whyLabel"></label>
+          <textarea rows="3" data-input="why" required aria-required="true"></textarea>
+          <p class="error" data-field="whyError" hidden></p>
+        </div>
+
+        <div class="field" data-slot="feel">
+          <label class="label">Three words for how your work should feel (optional)</label>
+          <input type="text" data-input="feel" placeholder="e.g. calm, direct, warm" autocomplete="off">
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn secondary" data-action="back">Back</button>
+          <button type="submit" class="btn primary" data-action="next">Next</button>
+        </div>
+      </form>
+    </section>
+  </template>
+
+  <template id="tpl-rules">
+    <section class="screen rules">
+      <h1 class="statement">Your rules, from your reasons.</h1>
+      <p class="body hint">Each reason became one rule, in your words. What you wrote is shown with the rule it became. Edit any rule so it says what you mean.</p>
+      <div class="rule-grid" data-slot="rules"></div>
+      <div class="actions">
+        <button type="button" class="btn secondary" data-action="back">Back</button>
+        <button type="button" class="btn primary" data-action="next">Preview the file</button>
+      </div>
+    </section>
+  </template>
+
+  <template id="tpl-rule-row">
+    <div class="rule-row">
+      <div class="rule-answer">
+        <span class="label" data-field="heading"></span>
+        <p class="body" data-field="why"></p>
+      </div>
+      <div class="rule-edit">
+        <label class="label" data-field="ruleLabel"></label>
+        <textarea rows="2" data-input="rule"></textarea>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-preview">
+    <section class="screen preview">
+      <h1 class="statement">Your <code>taste.md</code></h1>
+      <p class="body hint">This is the whole file. Download it, or copy it and paste it into your tool.</p>
+      <div class="actions top-actions">
+        <button type="button" class="btn primary" data-action="download">Download taste.md</button>
+        <button type="button" class="btn secondary" data-action="copy">Copy to clipboard</button>
+        <span class="label status" data-field="status" role="status" aria-live="polite"></span>
+      </div>
+      <pre class="file" tabindex="0" data-field="file"></pre>
+      <div class="actions">
+        <button type="button" class="btn secondary" data-action="back">Back to rules</button>
+        <button type="button" class="btn primary" data-action="next">Where to put it</button>
+      </div>
+    </section>
+  </template>
+
+  <template id="tpl-place">
+    <section class="screen place">
+      <h1 class="statement">Put it where your tool will read it.</h1>
+      <p class="body hint">Add the file to the same project you set up at the start. Then run prompt 2.</p>
+      <dl class="tools">
+        <div class="tool">
+          <dt class="label">Claude</dt>
+          <dd class="body">Open your Project, then its project knowledge, and upload <code>taste.md</code>. Or paste the file text into the project's instructions.</dd>
+        </div>
+        <div class="tool">
+          <dt class="label">ChatGPT</dt>
+          <dd class="body">Open your Project, then Files, and add <code>taste.md</code>. Add one line to the project instructions: "Read taste.md before you make anything for me."</dd>
+        </div>
+        <div class="tool">
+          <dt class="label">Gemini</dt>
+          <dd class="body">Open your Gem and paste the file text into its instructions, or attach <code>taste.md</code> to the chat you are working in.</dd>
+        </div>
+      </dl>
+      <p class="body">Then send prompt 2: <em>"Read taste.md in this project. Rebuild the same artifact so it follows my taste file. List the five changes you made and which line of the file each one comes from."</em></p>
+      <div class="actions">
+        <button type="button" class="btn secondary" data-action="back">Back to the file</button>
+        <button type="button" class="btn secondary" data-action="download">Download again</button>
+        <button type="button" class="btn ghost" data-action="restart">Start over</button>
+      </div>
+    </section>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
