@@ -243,6 +243,7 @@
   }
 
   function buildFile() {
+    rebuildRules(); // keeps hand-edited rules; fills any that were never derived
     var who = (answer("who").example || "").trim() || "(not filled in)";
     var feel = (answer("who").feel || "").trim().replace(/[.\s]+$/, "");
     var description = "How I judge writing and design. Read before making anything I will put in front of people.";
